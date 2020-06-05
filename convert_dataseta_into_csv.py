@@ -4,6 +4,7 @@ SHARP,Cgem.lorentzのデータセットから必要なデータを抽出する�
 第一引数:SHARPのデータセットがあるディレクトリのパス
 第二引数:cgem.Lorentzのデータセットが格納してあるディレクトリのパス
 第三引数:CSVファイルのパス
+ex)
 """
 import csv 
 import sunpy.map
