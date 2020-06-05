@@ -14,8 +14,8 @@ import pandas as pd
 import os
 from tqdm import tqdm
 def reading_dataset(SHARP_Path,CGEM_Path):
-    sharp_keys = ["t_rec","totusjh","totusjz","absnjzh","savncpp","usflux","area_acr","meangam","meangbt","meangbz","meangbh","meanjzh","meanjzd"]
-    cgem_keys = ["totbsq","totfz","epsz","totfy","totfx","epsy","epsx"]
+    sharp_keys = ["harpnum","t_rec","totusjh","totusjz","absnjzh","savncpp","usflux","area_acr","meangam","meangbt","meangbz","meangbh","meanjzh","meanjzd"]
+    cgem_keys = ["t_rec","totbsq","totfz","epsz","totfy","totfx","epsy","epsx"]
     sharp_path_obj = sorted(glob.glob(SHARP_Path))
     cgem_path_obj =sorted(glob.glob(CGEM_Path))
     datas =pd.DataFrame([sharp_keys+cgem_keys])
