@@ -1,5 +1,6 @@
 import subprocess
-i=0
+import time
+i=3
 while(1):
     command =["python3","scrape_flare_database.py",str(i)]
     print(command)
@@ -7,4 +8,5 @@ while(1):
         i+=1
         continue
     else:
+        wait(3600)
         continue
