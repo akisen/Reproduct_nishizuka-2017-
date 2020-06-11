@@ -8,5 +8,5 @@ while(1):
         i+=1
         continue
     else:
-        wait(3600)
+        time.sleep(3600)
         continue
