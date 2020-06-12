@@ -31,10 +31,10 @@ with tqdm(total = 100) as pbar:
         row =[column.text for column in data]
         for i in range(len(row)//7):
             
-            r=row[i*7:(i*7+6)]
+            r=row[i*7:(i*7+7)]
             rows.append(r)
             # print(r)
-csvfile="flare_database"+args[1]+".csv"
+csvfile="flare_database/flare_database"+args[1].zfill(2)+".csv"
 with open(csvfile,"w") as f:
     writer =csv.writer(f)
     writer.writerows(rows)
