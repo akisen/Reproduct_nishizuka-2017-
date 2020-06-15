@@ -34,7 +34,6 @@ def reading_dataset(SHARP_Path,CGEM_Path):
             datas=datas.append([row])
     return datas
 
-
 def main():
     args = sys.argv
     SHARP_Path = args[1]
