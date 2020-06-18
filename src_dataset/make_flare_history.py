@@ -12,6 +12,9 @@ import pandas as pd
 import numpy as np
 from tqdm import tqdm
 import sys
+import sunpy.map
+import glob
+from tqdm import tqdm
 def make_huge_flare_database (flare_df):
     flare_df["flare_24h"] = 0
     flare_df["longitude"] = 0
@@ -23,18 +26,30 @@ def make_huge_flare_database (flare_df):
 def make_flare_csv (flare_df, start_year, start_month, end_year, end_month):
     flare_history_df = pd.DataFrame(["his"])
     return flare_history_df
-
+def make_ar_csv(fits_path):
+    print("Make Active Region list from fits files.")
+    indexs=["harpnum","t_rec","noaa_ars","latdtmin","londtmin","latdtmax","londtmax"]
+    ar_csv=pd.DataFrame([indexs])
+    sorted_path = sorted(glob.glob(fits_path))
+    for path in tqdm(sorted_path):
+        row=[]
+        map=sunpy.map.Map(path)
+        for index in indexs:
+            row.append(map.meta[index])
+        ar_csv=ar_csv.append([row])
+    return ar_csv
 def main():
     args = sys.argv
-    flare_database_name = "Huge_Flare_database.csv"
-    flare_df =pd.read_csv(flare_database_name)
-    if args[1]==0:
+    flare_database_name = "../Huge_Flare_database.csv"
+    if args[1]=="0":
         flare_df = flare_df.drop_duplicates()
         flare_df["Start"]=pd.to_datetime(flare_df["Start"])
         flare_df["Derived Position"] = flare_df["Derived Position"].str.replace(" ","")
         make_huge_flare_database(flare_df).to_csv("flare_database/Huge_Flare_database.csv")
-    elif args[1]==1:
+    elif args[1]=="1":
         make_flare_csv(flare_df,args[2],args[3],args[4],args[5]).to_csv
+    elif args[1]=="2":
+        make_ar_csv(args[2]).to_csv("ar_list.csv")
 if __name__ == "__main__":
     main()
 
