@@ -1,10 +1,7 @@
 """
 フレアデータベースをもとにデータセットを作成するスクリプト
-第一引数: 作成するデータの種類 0→全部のデータからM以上を抽出 1→M以上のデータから学習に使用する用のデータを作成
-第2引数: 作成するデータの年(Start)
-第3引数: 作成するデータの月(Start)
-第4引数: 作成するデータの年(End)
-第5引数: 作成するデータの月(End)
+第1引数: 作成するデータの種類 0→全部のデータからM以上を抽出 2→M以上のデータから学習に使用する用のデータを作成
+
 """
 
 import time
@@ -16,6 +13,9 @@ import sunpy.map
 import glob
 from tqdm import tqdm
 def make_huge_flare_database (flare_df):
+    """
+    M,Xクラスのみのフレアデータ(csv)を作成する関数
+    """
     flare_df["flare_24h"] = 0
     flare_df["longitude"] = 0
     for i in tqdm(range (len(flare_df))):
@@ -23,21 +23,24 @@ def make_huge_flare_database (flare_df):
 
             flare_df=flare_df.drop(i,axis=0)
     return flare_df
-def make_flare_csv (flare_df, start_year, start_month, end_year, end_month):
-    flare_history_df = pd.DataFrame(["his"])
-    return flare_history_df
 def make_ar_csv(fits_path):
     print("Make Active Region list from fits files.")
     indexs=["harpnum","t_rec","noaa_ars","latdtmin","londtmin","latdtmax","londtmax"]
-    ar_csv=pd.DataFrame([indexs])
+    ar_csv=pd.DataFrame(columns=indexs)
     sorted_path = sorted(glob.glob(fits_path))
     for path in tqdm(sorted_path):
         row=[]
         map=sunpy.map.Map(path)
         for index in indexs:
-            row.append(map.meta[index])
+            if index =="harpnum":
+                row.append(str(map.meta[index]).zfill(4))
+            else:
+                row.append(map.meta[index])
         ar_csv=ar_csv.append([row])
     return ar_csv
+def make_flare_history(ar_coordinate_list,flare_list):
+    return 
+
 def main():
     args = sys.argv
     flare_database_name = "../Huge_Flare_database.csv"
@@ -47,9 +50,9 @@ def main():
         flare_df["Derived Position"] = flare_df["Derived Position"].str.replace(" ","")
         make_huge_flare_database(flare_df).to_csv("flare_database/Huge_Flare_database.csv")
     elif args[1]=="1":
-        make_flare_csv(flare_df,args[2],args[3],args[4],args[5]).to_csv
+        make_flare_csv()).to_csv
     elif args[1]=="2":
-        make_ar_csv(args[2]).to_csv("ar_list.csv")
+        (make_ar_csv(args[2]).sort_values(0)).to_csv("ar_coordinate_list.csv", index=False)
 if __name__ == "__main__":
     main()
 
