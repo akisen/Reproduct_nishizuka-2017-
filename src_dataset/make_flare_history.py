@@ -22,7 +22,6 @@ def make_huge_flare_database (flare_df):
     flare_df["longitude"] = 0
     for i in tqdm(range (len(flare_df))):
         if(flare_df["GOES Class"][i][0]=="A" or flare_df["GOES Class"][i][0]=="B"):
-
             flare_df=flare_df.drop(i,axis=0)
     return flare_df
 def make_ar_csv(fits_path):
