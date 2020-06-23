@@ -101,7 +101,7 @@ def make_flare_history(ar_coordinate_df,flare_df,flare_history_df):
                         print(flare_history_df["Xflare_flag"][k+1])
                 else:
                     print("Unexpected data")
-    print([index for index in flare_df.index.values])
+    # print([index for index in flare_df.index.values])
     return flare_history_df
 
 def main():
