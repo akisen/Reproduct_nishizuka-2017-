@@ -4,7 +4,7 @@ SHARP,Cgem.lorentzのデータセットから必要なデータを抽出する�
 第一引数:SHARPのデータセットがあるディレクトリのパス
 第二引数:cgem.Lorentzのデータセットが格納してあるディレクトリのパス
 第三引数:CSVファイルのパス
-ex)
+ex)python3 convert_dataset_into_csv.py "/media/akito/Data/Dataset/SHARP(CEA)/2010/201005/*Bp.fits" "/media/akito/Data/Dataset/Cgem.Lorentz/2010/201005/*.Fx.fits" "physical201005.csv"
 """
 import csv  
 import sunpy.map
@@ -39,6 +39,7 @@ def main():
     SHARP_Path = args[1]
     CGEM_Path = args[2]
     CSV_Path = args[3]
-    reading_dataset(SHARP_Path,CGEM_Path).to_csv(CSV_Path) 
+    # print(reading_dataset(SHARP_Path,CGEM_Path))
+    reading_dataset(SHARP_Path,CGEM_Path).to_csv(CSV_Path,index=False) 
 if __name__ == "__main__":
     main()

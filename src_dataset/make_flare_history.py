@@ -1,7 +1,10 @@
 """
 フレアデータベースをもとにデータセットを作成するスクリプト
 第1引数: 作成するデータの種類 0→全部のデータからM以上を抽出 →M以上のデータから学習に使用する用のデータを作成
-
+第2引数: GOESデータベースからダウンロードしたフレア履歴データのパス
+第3引数: 各ARの範囲のCSVファイルのパス
+第4引数: 物理特徴量の入ったCSVファイルのパス
+実行例:python3 make_flare_history.py 1 "../flare_database/Huge_Flare_database.csv" "ar_Coordinate_list.csv" "../SHARP/sharp201005.csv" "sharp_flare.201005.csv" 
 """
 
 import time
@@ -24,21 +27,6 @@ def make_huge_flare_database (flare_df):
         if(flare_df["GOES Class"][i][0]=="A" or flare_df["GOES Class"][i][0]=="B"):
             flare_df=flare_df.drop(i,axis=0)
     return flare_df
-def make_ar_csv(fits_path):
-    print("Make Active Region list from fits files.")
-    indexs=["harpnum","t_rec","noaa_ars","latdtmin","londtmin","latdtmax","londtmax"]
-    ar_csv=pd.DataFrame(columns=indexs)
-    sorted_path = sorted(glob.glob(fits_path))
-    for path in tqdm(sorted_path):
-        row=[]
-        map=sunpy.map.Map(path)
-        for index in indexs:
-            if index =="harpnum":
-                row.append(str(map.meta[index]).zfill(4))
-            else:
-                row.append(map.meta[index])
-        ar_csv=ar_csv.append([row])
-    return ar_csv
 def make_flare_history(ar_coordinate_df,flare_df,flare_history_df):
     flare_df = flare_df.drop("Events",axis=1)
     flare_df = flare_df.drop_duplicates()
@@ -102,7 +90,21 @@ def make_flare_history(ar_coordinate_df,flare_df,flare_history_df):
                     print("Unexpected data")
     # print([index for index in flare_df.index.values])
     return flare_history_df
-
+def make_ar_csv(fits_path):
+    print("Make Active Region list from fits files.")
+    indexs=["harpnum","t_rec","noaa_ars","latdtmin","londtmin","latdtmax","londtmax"]
+    ar_csv=pd.DataFrame(columns=indexs)
+    sorted_path = sorted(glob.glob(fits_path))
+    for path in tqdm(sorted_path):
+        row=[]
+        map=sunpy.map.Map(path)
+        for index in indexs:
+            if index =="harpnum":
+                row.append(str(map.meta[index]).zfill(4))
+            else:
+                row.append(map.meta[index])
+        ar_csv=ar_csv.append([row])
+    return ar_csv
 def main():
     args = sys.argv
     flare_database_path = args[2]
@@ -117,9 +119,9 @@ def main():
         flare_df["Derived Position"] = flare_df["Derived Position"].str.replace(" ","")
         make_huge_flare_database(flare_df).to_csv("C_Flare_database.csv")
     elif args[1]=="1":
-        make_flare_history(ar_coordinate_df,flare_df,ar_phisical_features_df).to_csv("sharp_test201005.csv")
+        make_flare_history(ar_coordinate_df,flare_df,ar_phisical_features_df).to_csv(args[5])
     elif args[1]=="2":
-        ((make_ar_csv(args[2]).sort_values(1)).sort_values(0)).to_csv("ar_coordinate_list.csv", header=False,index=False)
+        make_ar_csv(args[4]).to_csv("ar_Coordinate_list.csv", header=False,index=False)
 if __name__ == "__main__":
     main()
 
