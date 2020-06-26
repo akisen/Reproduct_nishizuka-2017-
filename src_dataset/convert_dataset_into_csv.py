@@ -15,24 +15,39 @@ import os
 from tqdm import tqdm
 def reading_dataset(SHARP_Path,CGEM_Path):
     sharp_keys = ["harpnum","t_rec","totusjh","totusjz","absnjzh","savncpp","usflux","area_acr","meangam","meangbt","meangbz","meangbh","meanjzh","meanjzd","latdtmin","latdtmax","londtmin","londtmax"]
-    cgem_keys = ["t_rec","totbsq","totfz","epsz","totfy","totfx","epsy","epsx"]
+    cgem_keys = ["harpnum","t_rec","totbsq","totfz","epsz","totfy","totfx","epsy","epsx"]
     sharp_path_obj = sorted(glob.glob(SHARP_Path))
     cgem_path_obj =sorted(glob.glob(CGEM_Path))
-    datas =pd.DataFrame([sharp_keys+cgem_keys])
-    size_of_data=len(sharp_path_obj)
+    sharp_datas =pd.DataFrame([sharp_keys])
+    cgem_datas = pd.DataFrame([cgem_keys])
+    size_of_data=len(sharp_path_obj)+len(cgem_path_obj)
+    print(len(sharp_path_obj))
+    print(len(cgem_path_obj))
     with tqdm(total = size_of_data) as pbar:
-        for sharp_data,cgem_data in zip(sharp_path_obj,cgem_path_obj):
+        for sharp_data in sharp_path_obj:
+            print("sharp")
             pbar.update(1)
             sharp_map =sunpy.map.Map(sharp_data)
-            cgem_map =sunpy.map.Map(cgem_data)
-            row=[]
+            sharp_row=[]
             for key in sharp_keys:
                 # print(str(key)+str(map.meta[key]))
-                row.append(str(sharp_map.meta[key]))
+                sharp_row.append(str(sharp_map.meta[key]))
+            if(set(sharp_row[2:14])!={'0.0'} or (set(sharp_row[2:14])=={'0.0', '-nan'})):# すべての要素が0の行を弾く
+                sharp_datas=sharp_datas.append([sharp_row])
+        for cgem_data in cgem_path_obj:
+            pbar.update(1)
+            cgem_map =sunpy.map.Map(cgem_data)
+            cgem_row=[]
+            # print(set(row[2:14])=={'0.0', '-nan'})
             for key in cgem_keys:
-                row.append(str(cgem_map.meta[key]))
-            datas=datas.append([row])
-    return datas
+                cgem_row.append(str(cgem_map.meta[key]))
+            # if (sharp_map.meta["t_rec"]!=cgem_map.meta["t_rec"]):
+            #     print(row)
+            #     exit()
+            print("cgem")
+            cgem_datas=cgem_datas.append([cgem_row])
+        merged_datas = pd.concat([sharp_datas,cgem_datas],axis=1)
+    return merged_datas
 
 def main():
     args = sys.argv
@@ -40,6 +55,6 @@ def main():
     CGEM_Path = args[2]
     CSV_Path = args[3]
     # print(reading_dataset(SHARP_Path,CGEM_Path))
-    reading_dataset(SHARP_Path,CGEM_Path).to_csv(CSV_Path,index=False) 
+    reading_dataset(SHARP_Path,CGEM_Path).to_csv(CSV_Path,index=False,header=False) 
 if __name__ == "__main__":
     main()
