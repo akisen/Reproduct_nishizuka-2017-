@@ -7,6 +7,6 @@ for year in years:
         if(year==2010 and month<=4):
             continue
         else:
-            command = 'python3 marge_sharp_lorentz.py "/media/akito/Data/Dataset/SHARP(CEA)/'+str(year)+"/"+str(year)+str(month).zfill(2)+'/*Bp.fits" "/media/akito/Data/Dataset/Cgem.Lorentz/'+str(year)+"/"+str(year)+str(month).zfill(2)+'/*.Fx.fits" "../physical_feature/physical'+str(year)+str(month).zfill(2)+'.csv"'
+            command = 'python3 merge_sharp_lorentz.py "/media/akito/Data/Dataset/SHARP(CEA)/'+str(year)+"/"+str(year)+str(month).zfill(2)+'/*Bp.fits" "/media/akito/Data/Dataset/Cgem.Lorentz/'+str(year)+"/"+str(year)+str(month).zfill(2)+'/*.Fx.fits" "../physical_feature/physical'+str(year)+str(month).zfill(2)+'.csv"'
             print(command)
             subprocess.call(command,shell=True)

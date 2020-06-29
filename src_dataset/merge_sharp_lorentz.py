@@ -8,10 +8,12 @@ import datetime
 import numpy as np 
 import pickle
 import os
+import warnings
+warnings.simplefilter('ignore')
 def extract_sharp_features(SHARP_Path):
     feature_list = ["harpnum","totusjh","totusjz","absnjzh","savncpp","usflux","area_acr","meangam","meangbt","meangbz","meangbh","meanjzh","meanjzd","latdtmin","latdtmax","londtmin","londtmax"]
-    if(os.path.exists("physical_feature/sharp_dfs.pickle")):
-        sharp_dfs=pickle_load("physical_feature/sharp_dfs.pickle")
+    if(os.path.exists("sharp_dfs.pickle")):
+        sharp_dfs=pickle_load("sharp_dfs.pickle")
     else:
         sharp_dfs={}
     sharp_list = sorted(glob.glob(SHARP_Path))
@@ -47,8 +49,8 @@ def extract_sharp_features(SHARP_Path):
     return sharp_dfs
 def extract_cgem_features(CGEM_Path):
     feature_list=["harpnum","t_rec","totbsq","totfz","epsz","totfy","totfx","epsy","epsx"]
-    if(os.path.exists("physical_feature/cgem_dfs.pickle")):
-        cgem_dfs=pickle_load("physical_feature/cgem_dfs.pickle")
+    if(os.path.exists("cgem_dfs.pickle")):
+        cgem_dfs=pickle_load("cgem_dfs.pickle")
     else:
         cgem_dfs={}
     cgem_list = sorted(glob.glob(CGEM_Path))
@@ -99,9 +101,9 @@ def pickle_load(path):
         data = pickle.load(f)
         return data
 def save_as_pickle(sharp_dfs,cgem_dfs,merged_dfs):
-    pickle_dump(sharp_dfs,"physical_feature/sharp_dfs.pickle")
-    pickle_dump(cgem_dfs,"physical_feature/cgem_dfs.pickle")
-    pickle_dump(merged_dfs,"physical_feature/merged_dfs.pickle")
+    pickle_dump(sharp_dfs,"sharp_dfs.pickle")
+    pickle_dump(cgem_dfs,"cgem_dfs.pickle")
+    pickle_dump(merged_dfs,"merged_dfs.pickle")
 def main():
     args = sys.argv
     SHARP_Path = args[1]
